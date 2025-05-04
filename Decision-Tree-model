@@ -1,0 +1,104 @@
+# ================================================
+# 1. IMPORTING REQUIRED LIBRARIES
+# ================================================
+
+# numpy for numerical operations
+import numpy as np
+
+# pandas for working with structured data (DataFrames)
+import pandas as pd
+
+# matplotlib for data visualization
+import matplotlib.pyplot as plt
+
+# scikit-learn dataset loader to load the Iris dataset
+from sklearn.datasets import load_iris
+
+# to split the dataset into training and testing parts
+from sklearn.model_selection import train_test_split
+
+# DecisionTreeClassifier is the model we'll be using
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+
+# metrics to evaluate model performance
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+
+# ================================================
+# 2. LOADING THE DATASET
+# ================================================
+
+# Load the Iris dataset — a built-in, well-known dataset for classification
+iris = load_iris()
+
+# Features (input variables) — 4 measurements of iris flowers
+X = iris.data
+
+# Target (labels) — species of iris flowers (setosa, versicolor, virginica)
+y = iris.target
+
+# Optional step: convert to DataFrame for better readability and exploration
+df = pd.DataFrame(X, columns=iris.feature_names)
+df['target'] = y  # Add the target column to the DataFrame
+
+# Display first few rows of the dataset
+df.head()
+
+# ================================================
+# 3. SPLITTING THE DATA INTO TRAIN AND TEST SETS
+# ================================================
+
+# Split the dataset into 80% training and 20% testing data
+# This helps us evaluate the model on unseen data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# ================================================
+# 4. INITIALIZING AND TRAINING THE DECISION TREE MODEL
+# ================================================
+
+# Create an instance of the DecisionTreeClassifier
+# random_state ensures reproducible results
+model = DecisionTreeClassifier(random_state=42)
+
+# Train (fit) the model using the training data
+model.fit(X_train, y_train)
+
+# ================================================
+# 5. MAKING PREDICTIONS AND EVALUATING THE MODEL
+# ================================================
+
+# Predict the class labels for the test data
+y_pred = model.predict(X_test)
+
+# Print accuracy score — the proportion of correct predictions
+print("Accuracy Score:", accuracy_score(y_test, y_pred))
+
+# Print classification report — includes precision, recall, f1-score
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+# Print confusion matrix — shows correct and incorrect predictions
+print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
+
+# ================================================
+# 6. VISUALIZING THE DECISION TREE
+# ================================================
+
+# Set figure size for better readability
+plt.figure(figsize=(15, 10))
+
+# Plot the decision tree
+# filled=True gives color to nodes, making it more interpretable
+# feature_names and class_names add meaningful labels to the tree
+plot_tree(
+    model,
+    feature_names=iris.feature_names,
+    class_names=iris.target_names,
+    filled=True
+)
+
+# Add a title to the plot
+plt.title("Decision Tree Visualization - Iris Dataset")
+
+# Display the plot
+plt.show()
